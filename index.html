@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spin and Win</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #wheelCanvas {
+            margin: 20px auto;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: conic-gradient(#ff6347 0 60deg, #ffa500 60deg 120deg, #32cd32 120deg 180deg, #4682b4 180deg 240deg, #daa520 240deg 300deg, #ff4500 300deg 360deg);
+        }
+        #spinButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #spinButton:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="spin-container">
+        <h2>Spin the wheel to win a discount!</h2>
+        <div id="wheelCanvas"></div>
+        <button id="spinButton">Spin</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        // Initialize wheel segments (discounts)
+        const segments = ['5% OFF', '10% OFF', '20% OFF', 'No Discount', '50% OFF'];
+        let storedReward = localStorage.getItem('reward');
+
+        // Check if the user is revisiting
+        if (storedReward) {
+            document.getElementById('result').innerText = `You already won: ${storedReward}`;
+            document.getElementById('spinButton').style.display = 'none';
+        } else {
+            const spinButton = document.getElementById('spinButton');
+            spinButton.addEventListener('click', spinWheel);
+
+            function spinWheel() {
+                const result = segments[Math.floor(Math.random() * segments.length)];
+                document.getElementById('result').innerText = `You won: ${result}`;
+                localStorage.setItem('reward', result);
+                spinButton.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
