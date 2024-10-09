@@ -15,7 +15,16 @@
             width: 300px;
             height: 300px;
             border-radius: 50%;
+            position: relative;
             background: conic-gradient(#ff6347 0 60deg, #ffa500 60deg 120deg, #32cd32 120deg 180deg, #4682b4 180deg 240deg, #daa520 240deg 300deg, #ff4500 300deg 360deg);
+        }
+        .segment-label {
+            position: absolute;
+            width: 100px;
+            text-align: center;
+            transform-origin: 150px 150px;
+            font-weight: bold;
+            color: white;
         }
         #spinButton {
             padding: 10px 20px;
@@ -34,34 +43,69 @@
             font-size: 24px;
             font-weight: bold;
         }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate {
+            animation: spin 2s ease-out;
+        }
     </style>
 </head>
 <body>
     <div id="spin-container">
         <h2>Spin the wheel to win a discount!</h2>
-        <div id="wheelCanvas"></div>
+        <div id="wheelCanvas">
+            <!-- Labels for segments -->
+            <div class="segment-label" style="top: 15px; left: 115px; transform: rotate(30deg);">5% OFF</div>
+            <div class="segment-label" style="top: 55px; left: 220px; transform: rotate(90deg);">10% OFF</div>
+            <div class="segment-label" style="top: 150px; left: 240px; transform: rotate(150deg);">20% OFF</div>
+            <div class="segment-label" style="top: 240px; left: 200px; transform: rotate(210deg);">No Discount</div>
+            <div class="segment-label" style="top: 250px; left: 90px; transform: rotate(270deg);">50% OFF</div>
+            <div class="segment-label" style="top: 200px; left: 10px; transform: rotate(330deg);">10% OFF</div>
+        </div>
         <button id="spinButton">Spin</button>
         <div id="result"></div>
     </div>
+
     <script>
         // Initialize wheel segments (discounts)
         const segments = ['5% OFF', '10% OFF', '20% OFF', 'No Discount', '50% OFF'];
         let storedReward = localStorage.getItem('reward');
 
+        const wheel = document.getElementById('wheelCanvas');
+        const spinButton = document.getElementById('spinButton');
+        const resultDiv = document.getElementById('result');
+
         // Check if the user is revisiting
         if (storedReward) {
-            document.getElementById('result').innerText = `You already won: ${storedReward}`;
-            document.getElementById('spinButton').style.display = 'none';
+            resultDiv.innerText = `You already won: ${storedReward}`;
+            spinButton.style.display = 'none';
         } else {
-            const spinButton = document.getElementById('spinButton');
             spinButton.addEventListener('click', spinWheel);
+        }
 
-            function spinWheel() {
+        function spinWheel() {
+            // Disable button after spinning
+            spinButton.disabled = true;
+
+            // Add the spin animation
+            wheel.classList.add('animate');
+
+            // Determine the result after spinning (simulating randomness)
+            setTimeout(() => {
                 const result = segments[Math.floor(Math.random() * segments.length)];
-                document.getElementById('result').innerText = `You won: ${result}`;
+                resultDiv.innerText = `You won: ${result}`;
+
+                // Store the result in localStorage
                 localStorage.setItem('reward', result);
+
+                // Remove the animation class after spinning
+                wheel.classList.remove('animate');
+
+                // Hide the button after spin
                 spinButton.style.display = 'none';
-            }
+            }, 2000); // Spin duration of 2 seconds
         }
     </script>
 </body>
